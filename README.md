@@ -1,7 +1,6 @@
 # AI-Powered Music Set Generation System 🎧
 
-## About
-This is my M.Tech course project for Advanced Multi-Agent Systems. It generates personalized music playlists based on the user's preferred genre, mood, event, and duration.
+## It generates personalized music playlists based on the user's preferred genre, mood, event, and duration.
 
 The system uses AI to discover, rank, and curate tracks automatically.
 
