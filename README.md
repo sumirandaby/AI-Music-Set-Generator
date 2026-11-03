@@ -1,6 +1,5 @@
 ## An AI-powered multi-agent system that generates personalized music sets based on user preferences such as genre, mood, event, and duration.
 
-This project is developed as part of the **Advanced Multi-Agent Systems** course project.
 
 ## 🚀 Project Overview
 
