@@ -42,9 +42,9 @@ with col1:
     selected_genre = st.selectbox(
         "Music Genre",
         [
+            "Future House",
             "Progressive House",
             "Big Room House",
-            "Future House",
             "Deep House",
             "Tech House",
             "Melodic House",
