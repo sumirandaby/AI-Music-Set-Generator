@@ -1,5 +1,3 @@
-# AI-Powered Music Set Generation System 🎧
-
 ## It generates personalized music playlists based on the user's preferred genre, mood, event, and duration.
 
 The system uses AI to discover, rank, and curate tracks automatically.
