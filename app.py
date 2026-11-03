@@ -1,13 +1,12 @@
+
 import streamlit as st
 import csv
 import io
-
+from urllib.parse import quote
 from agent import generate_music_set
 
 
-# ==================================================
 # 1. PAGE CONFIGURATION
-# ==================================================
 
 st.set_page_config(
     page_title="AI Music Set Generator",
@@ -15,15 +14,13 @@ st.set_page_config(
     layout="wide"
 )
 
+
 # Preserve playlist across Streamlit reruns
 if "generated_tracks" not in st.session_state:
     st.session_state.generated_tracks = None
 
 
-# ==================================================
 # 2. APPLICATION HEADER
-# ==================================================
-
 st.title("🎧 AI-Powered Music Set Generator")
 
 st.caption(
@@ -34,12 +31,8 @@ st.caption(
 st.divider()
 
 
-# ==================================================
 # 3. USER INPUTS
-# ==================================================
-
 st.header("Configure Your Music Set")
-
 col1, col2 = st.columns(2)
 
 
@@ -47,7 +40,6 @@ col1, col2 = st.columns(2)
 
 with col1:
 
-    # Genre selection
     selected_genre = st.selectbox(
         "Music Genre",
         [
@@ -78,8 +70,6 @@ with col1:
     else:
         genre = selected_genre
 
-
-    # Mood selection
     selected_mood = st.selectbox(
         "Mood",
         [
@@ -104,8 +94,6 @@ with col1:
     else:
         mood = selected_mood
 
-
-    # Duration
     duration = st.number_input(
         "Set Duration (minutes)",
         min_value=10,
@@ -119,7 +107,6 @@ with col1:
 
 with col2:
 
-    # Event selection
     selected_event = st.selectbox(
         "Event",
         [
@@ -144,14 +131,11 @@ with col2:
     else:
         event = selected_event
 
-
-    # Optional favorite track
     favorite_track = st.text_input(
         "Favorite Track (optional)",
         placeholder="e.g. Animals"
     )
 
-    # Optional favorite artist
     favorite_artist = st.text_input(
         "Favorite Artist (optional)",
         placeholder="e.g. Martin Garrix"
@@ -161,17 +145,13 @@ with col2:
 st.divider()
 
 
-# ==================================================
 # 4. GENERATE MUSIC SET
-# ==================================================
-
 if st.button(
     "🎵 Generate Music Set",
     type="primary",
     use_container_width=True
 ):
 
-    # Validate custom inputs
     if not genre.strip():
         st.warning("Please enter a music genre.")
 
@@ -200,7 +180,6 @@ if st.button(
 
                 tracks = generate_music_set(user_input)
 
-            # Save playlist in session state
             st.session_state.generated_tracks = tracks
 
         except Exception as error:
@@ -214,10 +193,7 @@ if st.button(
             )
 
 
-# ==================================================
 # 5. DISPLAY GENERATED PLAYLIST
-# ==================================================
-
 tracks = st.session_state.generated_tracks
 
 if tracks is not None:
@@ -237,10 +213,7 @@ if tracks is not None:
 
         st.header("🎧 Your Generated Playlist")
 
-
-        # ------------------------------------------
         # Divide playlist into four sections
-        # ------------------------------------------
 
         total = len(tracks)
 
@@ -269,7 +242,12 @@ if tracks is not None:
                 name = track.get("name", "Unknown Track")
                 artist = track.get("artist", "Unknown Artist")
                 score = track.get("score")
-                url = track.get("url")
+
+                # Generate Spotify search link
+                search_query = quote(f"{name} {artist}")
+                spotify_url = (
+                    f"https://open.spotify.com/search/{search_query}"
+                )
 
                 with st.container(border=True):
 
@@ -283,10 +261,9 @@ if tracks is not None:
 
                         st.write(f"🎤 {artist}")
 
-                        if url:
-                            st.markdown(
-                                f"[Listen on Last.fm]({url})"
-                            )
+                        st.markdown(
+                            f"[🎧 Listen on Spotify]({spotify_url})"
+                        )
 
                     with col2:
 
@@ -308,7 +285,7 @@ if tracks is not None:
                 "Track",
                 "Artist",
                 "Score",
-                "Last.fm URL"
+                "Spotify URL"
             ]
         )
 
@@ -316,11 +293,19 @@ if tracks is not None:
 
         for track in tracks:
 
+            name = track.get("name", "")
+            artist = track.get("artist", "")
+
+            search_query = quote(f"{name} {artist}")
+            spotify_url = (
+                f"https://open.spotify.com/search/{search_query}"
+            )
+
             writer.writerow({
-                "Track": track.get("name", ""),
-                "Artist": track.get("artist", ""),
+                "Track": name,
+                "Artist": artist,
                 "Score": track.get("score", ""),
-                "Last.fm URL": track.get("url", "")
+                "Spotify URL": spotify_url
             })
 
         st.divider()
@@ -333,11 +318,7 @@ if tracks is not None:
             use_container_width=True
         )
 
-
-# ==================================================
 # 6. FOOTER
-# ==================================================
-
 st.divider()
 
 st.caption(
